@@ -2,8 +2,25 @@ from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import String, Text, DateTime, func
 import uuid
-
 from db.base import Base
+
+
+"""
+models/note.py
+
+Modelo ORM SQLAlchemy para la tabla `notes`.
+
+Campos:
+- id: UUID (PK)
+- title: string (max 200)
+- content: text
+- created_at: timestamp con tz (default now())
+- updated_at: timestamp con tz (default now(), cambia en update)
+
+Notas:
+- `server_default=func.now()` deja que Postgres ponga el timestamp.
+- `onupdate=func.now()` actualiza `updated_at` al hacer UPDATE.
+"""
 
 
 class Note(Base):

@@ -6,6 +6,24 @@ from models.note import Note
 from schemas.note import NoteCreate, NoteUpdate
 
 
+"""
+repositories/note_repository.py
+
+Responsabilidad:
+- Capa de acceso a datos (DAL).
+- Ejecuta operaciones CRUD contra PostgreSQL usando SQLAlchemy ORM.
+- NO maneja HTTP, NO decide códigos de estado, NO lanza HTTPException.
+  Solo retorna modelos `Note` (o None) y realiza commits.
+
+Dependencias:
+- `db: Session` viene de `Depends(get_db)` en la capa API.
+- Usa SQLAlchemy `select` para listados y `db.get()` para búsqueda por PK.
+
+Notas:
+- `list_notes` ordena por `updated_at` descendente para mostrar lo más reciente primero.
+"""
+
+
 class NotesRepository:
     def list_notes(self, db: Session) -> list[Note]:
         stmt = select(Note).order_by(Note.updated_at.desc())

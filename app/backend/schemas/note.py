@@ -3,6 +3,25 @@ from uuid import UUID
 from datetime import datetime
 
 
+"""
+schemas/note.py
+
+Responsabilidad:
+- Definir contratos de entrada/salida (Pydantic) para la API.
+- Validar tamaños y requerimientos:
+  - title: 1..200
+  - content: 0..5000
+- Separar modelos:
+  - NoteCreate: para POST
+  - NoteUpdate: para PUT/PATCH (campos opcionales)
+  - NoteRead: salida hacia el cliente
+
+Detalles:
+- `from_attributes=True` permite convertir desde objetos ORM (`models.Note`)
+  hacia `NoteRead` sin mapear manualmente.
+"""
+
+
 class NoteBase(BaseModel):
     title: str = Field(min_length=1, max_length=200)
     content: str = Field(default="", max_length=5000)
