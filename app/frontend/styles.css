@@ -1,0 +1,130 @@
+:root {
+  --bg: #0b0d12;
+  --card: #121622;
+  --text: #e7eaf0;
+  --muted: #9aa3b2;
+  --border: #242b3a;
+  --accent: #6ea8fe;
+  --danger: #ff6b6b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.container {
+  width: min(1100px, 92vw);
+  margin: 18px auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr; }
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+h1 { margin: 0 0 6px; }
+h2 { margin: 0 0 12px; font-size: 18px; }
+
+.muted { color: var(--muted); }
+.small { font-size: 12px; }
+
+.stack { display: grid; gap: 10px; }
+
+label { display: grid; gap: 6px; font-size: 13px; color: var(--muted); }
+
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #0f1320;
+  color: var(--text);
+  outline: none;
+}
+
+input:focus, textarea:focus {
+  border-color: rgba(110,168,254,0.7);
+}
+
+.row { display: flex; gap: 10px; align-items: center; }
+.space { justify-content: space-between; }
+
+button {
+  border: 1px solid var(--border);
+  background: #1a2032;
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+button:hover { border-color: rgba(110,168,254,0.6); }
+
+button.ghost {
+  background: transparent;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+  display: grid;
+  gap: 10px;
+}
+
+.note {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  background: #0f1320;
+}
+
+.note .meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.note h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.note p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  white-space: pre-wrap;
+}
+
+.note .actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+}
+
+.badge {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.danger {
+  border-color: rgba(255,107,107,0.6);
+}
