@@ -1,200 +1,161 @@
-# Notes App MVP (Backend)
+# Notes API
 
-A simple **single-user Notes API** built as an educational MVP to practice backend development with **FastAPI**, **SQLAlchemy**, and **PostgreSQL**, following a **layered architecture**.
+Minimal Notes application built with FastAPI and PostgreSQL, following a layered architecture and focusing on clarity, correctness, and reproducibility.
 
-The project intentionally keeps scope small and explicit, focusing on clean separation of concerns and correct data flow.
+This project was developed as an educational MVP to practice backend architecture, database design, and API development in a real-world setup.
 
 ---
 
-## 🎯 Scope
+## Features
 
-### ✅ What the system does
 - Create notes
+- Update notes
+- Delete notes
 - List all notes
-- Get a single note by ID
-- Update a note
-- Delete a note
+- Retrieve a single note
+- Health checks for API and database
 
-### ❌ Out of scope
-- Authentication / authorization
+Out of scope:
+- Authentication
 - Multi-user support
-- Offline mode
+- Offline support
 - Native mobile apps
-- Database migrations (no Alembic for now)
 
 ---
 
-## 🧱 Tech Stack
+## Tech Stack
 
-- **Python** 3.14
-- **FastAPI**
-- **SQLAlchemy** 2.x
-- **PostgreSQL**
-- **psycopg** 3 + psycopg-binary
-- **python-dotenv**
-- **Uvicorn**
-- Virtual environment (`venv`)
+- Python 3.12+
+- FastAPI
+- SQLAlchemy 2.x
+- PostgreSQL
+- psycopg (v3)
+- HTML / CSS / Vanilla JavaScript (minimal frontend)
 
 ---
 
-## 🗂️ Project Structure
+## Project Structure
 
-```text
-app/
-└── backend/
-    ├── api/              # FastAPI routers (HTTP layer)
-    ├── core/             # Configuration (env, settings)
-    ├── db/               # SQLAlchemy base and session
-    ├── models/           # ORM models
-    ├── repositories/     # Database access (CRUD)
-    ├── schemas/          # Pydantic schemas (DTOs)
-    ├── services/         # Business logic (minimal for MVP)
-    ├── main.py           # App entrypoint
-    ├── .env              # Environment variables (not committed)
-    └── requirements.txt
-
-```
-## ⚠️ Important
-
-This project does **not** use `app.` as an import prefix.  
-All imports are relative to `app/backend`.
-
-**Example:**
-
-```python
-from core.config import DATABASE_URL
-from db.session import get_db
-```
+.
+├── app/
+│   ├── backend/
+│   │   ├── api/              # FastAPI routers
+│   │   ├── core/             # Configuration
+│   │   ├── db/               # Database session and SQL scripts
+│   │   ├── models/           # SQLAlchemy models
+│   │   ├── repositories/     # Data access layer
+│   │   ├── schemas/          # Pydantic schemas
+│   │   ├── main.py           # FastAPI entrypoint
+│   │   └── requirements.txt
+│   └── frontend/
+│       ├── index.html
+│       ├── styles.css
+│       └── app.js
+├── db/
+│   ├── schema.sql
+│   └── seed.sql
+├── .env.example
+└── README.md
 
 ---
 
-## 🗄️ Database
-
-The database is PostgreSQL, created manually (no migrations yet).
-
-**Table:** notes
-
-```sql
-CREATE TABLE notes (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  title VARCHAR(200) NOT NULL,
-  content VARCHAR(5000) NOT NULL DEFAULT '',
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-```
-
-There are sample notes already inserted for testing.
-
----
-
-## ⚙️ Configuration
-
-Create a `.env` file inside `app/backend/`:
-
-```env
-DATABASE_URL=postgresql+psycopg://postgres:PASSWORD@localhost:5432/postgres
-```
-
-If `DATABASE_URL` is missing, the app will **fail fast on startup**.
-
----
-
-## 🚀 How to Run the Backend
-
-### 1) Activate virtual environment (PowerShell)
-
-```powershell
-. .\.venv\Scripts\Activate.ps1
-```
-
-### 2) Install dependencies
-
-```powershell
-pip install -r requirements.txt
-```
-
-### 3) Run the server
-
-```powershell
-uvicorn main:app --reload
-```
-
-The API will be available at:
-
-```
-http://127.0.0.1:8000
-```
-
----
-
-## 📚 API Documentation (Swagger)
-
-FastAPI automatically exposes interactive docs.
-
-Swagger UI:
-
-```
-http://127.0.0.1:8000/docs
-```
-
-You can test the full CRUD:
-
-- GET /notes
-- POST /notes
-- GET /notes/{note_id}
-- PUT /notes/{note_id}
-- DELETE /notes/{note_id}
-
----
-
-## 🩺 Health Checks
-
-### API health
-
-```
-GET /health
-```
-
-Response:
-
-```json
-{ "status": "ok" }
-```
-
-### Database health
-
-```
-GET /health/db
-```
-
-Response:
-
-```json
-{ "db": "ok" }
-```
-
----
-
-## 🧠 Architecture Overview
+## Architecture Overview
 
 The backend follows a layered architecture:
 
-```
-HTTP Request
-   ↓
-api/ (FastAPI routers)
-   ↓
-services/ (business orchestration)
-   ↓
-repositories/ (SQLAlchemy CRUD)
-   ↓
-PostgreSQL
-```
+- API layer: HTTP routing and request/response handling
+- Service layer: Business logic (kept minimal for this MVP)
+- Repository layer: Database access via SQLAlchemy
+- Model layer: ORM models mapped to PostgreSQL tables
 
-### Design rules
+main.py only wires dependencies and routers.  
+It does not contain business logic or direct database access.
 
-- api/ handles HTTP concerns (status codes, validation errors)
-- repositories/ handle database access only
-- services/ contain business rules (kept minimal in this MVP)
-- main.py only wires the application together
+---
+
+## Requirements
+
+- Python 3.12+
+- PostgreSQL 16+
+- pip / venv
+
+---
+
+## Environment Variables
+
+Create a .env file based on .env.example:
+
+DATABASE_URL=postgresql+psycopg://notes_user:notes_pass@localhost:5432/notes_db
+
+---
+
+## Database Setup
+
+Install PostgreSQL:
+
+sudo apt install postgresql postgresql-contrib  
+sudo systemctl enable --now postgresql
+
+Create database and user:
+
+sudo -iu postgres psql << 'SQL'
+CREATE USER notes_user WITH PASSWORD 'notes_pass';
+CREATE DATABASE notes_db OWNER notes_user;
+\c notes_db
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+SQL
+
+Create schema and seed data:
+
+sudo -iu postgres psql -d notes_db -f db/schema.sql  
+sudo -iu postgres psql -d notes_db -f db/seed.sql
+
+---
+
+## Backend Setup
+
+cd app/backend  
+python3 -m venv .venv  
+source .venv/bin/activate  
+pip install -r requirements.txt  
+uvicorn main:app --reload
+
+API will be available at:
+
+http://127.0.0.1:8000
+
+Swagger UI:
+
+http://127.0.0.1:8000/docs
+
+---
+
+## Frontend Setup
+
+The frontend is intentionally minimal.
+
+cd app/frontend  
+python3 -m http.server 5173
+
+Open:
+
+http://127.0.0.1:5173
+
+---
+
+## API Endpoints (Summary)
+
+GET /notes  
+POST /notes  
+GET /notes/{id}  
+PUT /notes/{id}  
+DELETE /notes/{id}  
+GET /health  
+GET /health/db
+
+---
+
+## Status
+
+This project represents a completed MVP.  
+Further extensions (authentication, migrations, tests, Docker) are intentionally left out of scope.
